@@ -14,75 +14,89 @@ const table = new Table({
 });
 
 //establish connection to mySQL database
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
   database: "bamazon_db"
 });
 
-//Start of the program
-inquirer.prompt([
-    {
-        type: 'list',
-        message: 'Welcome to Bamazon. What would you like to do?',
-        choices: ["See available products", "Make a purchase", "Exit"],
-        name: "customerChoice"
-    }
-]).then((userInput) => {
-    if (userInput.customerChoice === "See available products") {
-        connection.connect(function(err) {
-            if (err) throw err;
-            connection.query("SELECT product, price, qty FROM bamazon_db.products;", function (err, result) {
-              if (err) throw err;
-              result.forEach((item) => {
-                  table.push(
-                      [item.product, item.price, item.qty]
-                  );
-              })
-              console.log(table.toString());
-              inquirer.prompt([
-                  {
-                      type: "list",
-                      message: "What would you like to do next?",
-                      choices: ["Make a purchase", "Exit"],
-                      name: "customerChoice"
-                  }
-              ]).then((userInput) => {
-                  if (userInput.customerChoice === "Make a purchase") {
-                      inquirer.prompt([
-                          {
-                              type: "input",
-                              message: "What would you like to buy?",
-                              name: "purchase"
-                          },
-                          {
-                              type: "input",
-                              message: "How many?",
-                              name: "purchaseQty"
-                          }
-                      ]).then((userInput) => {
-                          connection.query("UPDATE bamazon_db.products SET qty = qty - " + parseInt(userInput.purchaseQty) + " WHERE product = '" + userInput.purchase + "'")
-                          inquirer.prompt([
-                              {
-                                  type: "confirm",
-                                  message: "Would you like to purchase more products?",
-                                  name: "moreProduct"
-                              }
-                          ]).then((userInput) => {
-                              if (!userInput.moreProduct) {
-                                  process.exit();
-                              }
-                          })
-                      })
-                  } else if (userInput.customerChoice === "Exit") {
-                      process.exit();
-                  }
-              })
-            });
-        });
-    }
-});
+let productList = [];
+
+connection.query("SELECT product FROM bamazon_db.products;",
+function (err, result) {
+    if (err) throw err;
+    result.forEach(product => {
+        let item = product.product;
+        productList += item;
+    })
+})
+
+console.log(productList);
+
+// //Start of the program
+// inquirer.prompt([
+//     { //prompt user to select options
+//         type: 'list',
+//         message: 'Welcome to Bamazon. What would you like to do?',
+//         choices: ["See available products", "Make a purchase", "Exit"],
+//         name: "customerChoice"
+//     }
+// ]).then((userInput) => {
+//     //return functions depending on user's input
+//     if (userInput.customerChoice === "See available products") {
+//         connection.connect(function(err) {
+//             if (err) throw err;
+//             connection.query("SELECT product, price, qty FROM bamazon_db.products;", function (err, result) {
+//               if (err) throw err;
+//               result.forEach((item) => {
+//                   table.push(
+//                       [item.product, item.price, item.qty]
+//                   );
+//               })
+//               console.log(table.toString());
+//               inquirer.prompt([
+//                   {
+//                       type: "list",
+//                       message: "What would you like to do next?",
+//                       choices: ["Make a purchase", "Exit"],
+//                       name: "customerChoice"
+//                   }
+//               ]).then((userInput) => {
+//                   if (userInput.customerChoice === "Make a purchase") {
+//                       inquirer.prompt([
+//                           {
+//                               type: "input",
+//                               message: "What would you like to buy?",
+//                               name: "purchase"
+//                           },
+//                           {
+//                               type: "input",
+//                               message: "How many?",
+//                               name: "purchaseQty"
+//                           }
+//                       ]).then((userInput) => {
+//                           connection.query("UPDATE bamazon_db.products SET qty = qty - " + parseInt(userInput.purchaseQty) + " WHERE product = '" + userInput.purchase + "'")
+//                           inquirer.prompt([
+//                               {
+//                                   type: "confirm",
+//                                   message: "Would you like to purchase more products?",
+//                                   name: "moreProduct"
+//                               }
+//                           ]).then((userInput) => {
+//                               if (!userInput.moreProduct) {
+//                                   process.exit();
+//                               }
+//                           })
+//                       })
+//                   } else if (userInput.customerChoice === "Exit") {
+//                       process.exit();
+//                   }
+//               })
+//             });
+//         });
+//     }
+// });
 // connection.connect(function(err) {
 //   if (err) throw err;
 //   console.log("Connected!");
