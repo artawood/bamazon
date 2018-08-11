@@ -1,0 +1,26 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Bamazon",
+  "main": "customer.js",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "express": "^4.16.3",
+    "inquirer": "^6.1.0",
+    "mysql": "2.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artawood/bamazon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artawood/bamazon/issues"
+  },
+  "homepage": "https://github.com/artawood/bamazon#readme"
+}
